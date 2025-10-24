@@ -1,2 +1,5 @@
 .vscode
 _bin
+cert
+configs/*.json
+*debug_bin*.exe
