@@ -1,6 +1,8 @@
 package app
 
 import (
+	"ciao-admin/internal/logging"
+	"ciao-admin/internal/loghandlers"
 	"ciao-admin/internal/server"
 	"encoding/json"
 	"fmt"
@@ -30,7 +32,7 @@ func getFullPath(path string) string {
 	return fullFilePath
 }
 
-func loadConfigFromFile(path string) *server.ServerConfig {
+func loadConfigFromFile(path string) *server.CoreConfig {
 	if path == "" {
 		slog.Error("failed to load configuration path to configuration file is empty")
 		return nil
@@ -47,7 +49,7 @@ func loadConfigFromFile(path string) *server.ServerConfig {
 		slog.Error("an error occured while trying to load configuration data", "error message", err.Error())
 		return nil
 	}
-	var serverConfig server.ServerConfig
+	var serverConfig server.CoreConfig
 	err = json.Unmarshal(serverConfigData, &serverConfig)
 	if err != nil {
 		slog.Error("an error occured while trying to parse configuration file", "error message", err.Error())
@@ -56,7 +58,7 @@ func loadConfigFromFile(path string) *server.ServerConfig {
 	return &serverConfig
 }
 
-func verifyServerConfig(config *server.ServerConfig) bool {
+func verifyServerConfig(config *server.CoreConfig) bool {
 	var result bool = true
 	if config.Address == "" {
 		slog.Error("'Domain' must not be empty")
@@ -119,6 +121,41 @@ func verifyServerConfig(config *server.ServerConfig) bool {
 	}
 
 	return result
+}
+
+func configureLogging(logLevelStr string, logDirPath string) slog.Handler {
+	logLevel := parseLogLevel(logLevelStr)
+	prettyStdhandler := loghandlers.PrettyStdLogHandler{
+		Level:  logLevel,
+		Writer: os.Stdout,
+	}
+
+	if logDirPath != "" {
+		logFile, err := logging.GetOrCreateLogFile(logDirPath)
+		if err != nil {
+			slog.Error("an error occured while trying to create log file",
+				"error message", err.Error(),
+			)
+		}
+
+		slog.Info("logger has been initialized",
+			"log level", logLevel.String(),
+			"log channels", fmt.Sprintf("stdout, %s", logDirPath),
+		)
+
+		fileHandler := loghandlers.FileLogHandler{
+			Level:  logLevel,
+			Writer: logFile,
+		}
+
+		multiHandler := loghandlers.NewMultiHandler(&prettyStdhandler, &fileHandler)
+		return multiHandler
+	}
+	slog.Info("logger has been initialized",
+		"log level", logLevel.String(),
+		"log channels", "stdout",
+	)
+	return &prettyStdhandler
 }
 
 func parseLogLevel(logLevelStr string) slog.Level {

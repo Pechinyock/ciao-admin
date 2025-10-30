@@ -12,11 +12,11 @@ import (
 
 type AdminApplication struct {
 	Version       string
-	configuration server.ServerConfig
+	configuration server.CoreConfig
 }
 
 func (app *AdminApplication) Init() bool {
-	handler := loghandlers.SimpleLogHandler{
+	handler := loghandlers.PrettyStdLogHandler{
 		Level:  slog.LevelDebug,
 		Writer: os.Stdout,
 	}
@@ -40,11 +40,11 @@ func (app *AdminApplication) Init() bool {
 	if !verifyServerConfig(cfg) {
 		return false
 	}
+
 	app.configuration = *cfg
-	logLevel := parseLogLevel(cfg.LogLevel)
-	slog.Info("logger has been initialized", "log level", logLevel.String())
-	handler.Level = logLevel
-	slog.SetDefault(logger)
+	configuredLogHandler := configureLogging(cfg.LogLevel, cfg.LogDirPath)
+	completeLogger := slog.New(configuredLogHandler)
+	slog.SetDefault(completeLogger)
 	return true
 }
 
@@ -52,14 +52,21 @@ func (app *AdminApplication) Run() {
 	fullAddr := fmt.Sprintf("%s:%d", app.configuration.Address,
 		app.configuration.Port,
 	)
-	isHttps := app.configuration.CertFilePath != ""
 
+	mux, err := RegisterMiddlewares()
+
+	if err != nil {
+		slog.Error("failed to configure middlewares")
+		return
+	}
 	serv := http.Server{
 		Addr:         fullAddr,
 		ReadTimeout:  app.configuration.ReadTimeout * time.Second,
 		WriteTimeout: app.configuration.WriteTimeout * time.Second,
-		//Handler: nil,
+		Handler:      mux,
 	}
+
+	isHttps := app.configuration.CertFilePath != ""
 
 	if isHttps {
 		slog.Info(fmt.Sprintf("running website at https://%s", fullAddr))
