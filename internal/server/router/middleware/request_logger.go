@@ -6,14 +6,38 @@ import (
 	"time"
 )
 
-func RequestLoggerMiddleware(next http.Handler, logger *slog.Logger) http.Handler {
+type responseWriter struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func (rw *responseWriter) WriteHeader(code int) {
+	rw.statusCode = code
+	rw.ResponseWriter.WriteHeader(code)
+}
+
+type RequestLogger struct {
+	Logger slog.Logger
+}
+
+func (rl *RequestLogger) Add(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		next.ServeHTTP(w, r)
+		rw := &responseWriter{ResponseWriter: w, statusCode: http.StatusOK}
+		next.ServeHTTP(rw, r)
 		duration := time.Since(start)
-		logger.Info(r.RequestURI,
-			"method", r.Method,
-			"duration", duration,
-		)
+		if rw.statusCode >= http.StatusOK && rw.statusCode < http.StatusMultipleChoices {
+			rl.Logger.Info(r.RequestURI,
+				"method", r.Method,
+				"status code", rw.statusCode,
+				"duration", duration,
+			)
+		} else if rw.statusCode >= http.StatusBadRequest && rw.statusCode <= http.StatusNetworkAuthenticationRequired {
+			rl.Logger.Error(r.RequestURI,
+				"method", r.Method,
+				"status code", rw.statusCode,
+				"duration", duration,
+			)
+		}
 	})
 }

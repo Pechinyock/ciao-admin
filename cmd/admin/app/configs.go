@@ -58,7 +58,7 @@ func loadConfigFromFile(path string) *server.CoreConfig {
 	return &serverConfig
 }
 
-func verifyServerConfig(config *server.CoreConfig) bool {
+func verifyCoreConfig(config *server.CoreConfig) bool {
 	var result bool = true
 	if config.Address == "" {
 		slog.Error("'Domain' must not be empty")
@@ -179,4 +179,29 @@ func parseLogLevel(logLevelStr string) slog.Level {
 			return slog.LevelInfo
 		}
 	}
+}
+
+func loadMiddlewareConfig(path string) *server.MeddlewaresConfig {
+	if path == "" {
+		return nil
+	}
+	var fullFilePath = getFullPath(path)
+
+	if _, err := os.Stat(fullFilePath); err != nil {
+		slog.Error("configuration file doesn't exist", "provided file path", fullFilePath)
+		return nil
+	}
+	serverConfigData, err := os.ReadFile(fullFilePath)
+	if err != nil {
+		slog.Error("an error occured while trying to load configuration data", "error message", err.Error())
+		return nil
+	}
+	var middlewareConfig server.MeddlewaresConfig
+	err = json.Unmarshal(serverConfigData, &middlewareConfig)
+	if err != nil {
+		slog.Error("an error occured while trying to parse configuration file", "error message", err.Error())
+		return nil
+	}
+	return &middlewareConfig
+
 }

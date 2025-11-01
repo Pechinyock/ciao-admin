@@ -11,8 +11,9 @@ import (
 )
 
 type AdminApplication struct {
-	Version       string
-	configuration server.CoreConfig
+	Version          string
+	configuration    *server.CoreConfig
+	middlewareConfig *server.MeddlewaresConfig
 }
 
 func (app *AdminApplication) Init() bool {
@@ -32,17 +33,21 @@ func (app *AdminApplication) Init() bool {
 		)
 	}
 
-	cfg := loadConfigFromFile(configPath)
-	if cfg == nil {
+	coreConfig := loadConfigFromFile(configPath)
+	if coreConfig == nil {
 		return false
 	}
 
-	if !verifyServerConfig(cfg) {
+	if !verifyCoreConfig(coreConfig) {
 		return false
 	}
 
-	app.configuration = *cfg
-	configuredLogHandler := configureLogging(cfg.LogLevel, cfg.LogDirPath)
+	middlewareConfig := loadMiddlewareConfig(coreConfig.MiddlewaresConfigPath)
+
+	app.configuration = coreConfig
+	app.middlewareConfig = middlewareConfig
+
+	configuredLogHandler := configureLogging(coreConfig.LogLevel, coreConfig.LogDirPath)
 	completeLogger := slog.New(configuredLogHandler)
 	slog.SetDefault(completeLogger)
 	return true
@@ -53,7 +58,7 @@ func (app *AdminApplication) Run() {
 		app.configuration.Port,
 	)
 
-	mux, err := RegisterMiddlewares()
+	mux, err := RegisterMiddlewares(app.middlewareConfig)
 
 	if err != nil {
 		slog.Error("failed to configure middlewares")
