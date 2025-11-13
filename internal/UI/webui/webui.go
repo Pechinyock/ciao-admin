@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"io"
 	"log/slog"
 	"os"
 	"path"
@@ -29,16 +30,18 @@ func New(config *WebUIBundleConfig) (*WebUIBundle, error) {
 		config: config,
 	}
 
-	allTemplates := getAllTemplates(config)
+	allTemplates := config.TemplatePaths
+
+	if len(allTemplates) == 0 {
+		return nil, errors.New("failed to load web bundle theres no templates were provided")
+	}
 
 	bundle.loadTemplates(allTemplates)
 	return &bundle, nil
 }
 
-func getAllTemplates(config *WebUIBundleConfig) []string {
-	return append(config.LayoutTemplates,
-		config.PageTemplates...,
-	)
+func (b *WebUIBundle) Render(templName string, writter io.Writer, data any) error {
+	return b.rootTempl.ExecuteTemplate(writter, templName, data)
 }
 
 func (b *WebUIBundle) loadTemplates(templatesPaths ...[]string) {
@@ -85,17 +88,17 @@ func (b *WebUIBundle) loadTemplates(templatesPaths ...[]string) {
 		b.rootTempl = template.New(rootTemplateName)
 		totalFiles := len(allTemplateFilePaths)
 		totalLoaded := 0
-		for i, f := range allTemplateFilePaths {
+		for _, f := range allTemplateFilePaths {
 			err := loadTemplateFromFile(f, b.rootTempl)
 			if err != nil {
 				slog.Error("failed to load template file", "error message", err.Error())
 				continue
 			}
-			totalLoaded += i
+			totalLoaded += 1
 		}
 
 		if totalFiles != totalLoaded {
-			slog.Error("not all templates were loaded in ti ui bundle",
+			slog.Error("not all templates were loaded in to ui bundle",
 				"total files count", totalFiles,
 				"total loaded", totalLoaded,
 			)

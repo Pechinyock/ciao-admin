@@ -1,7 +1,7 @@
 package app
 
 import (
-	"ciao-admin/cmd/admin/app/configuration"
+	"ciao-admin/cmd/coven/app/configuration"
 	"ciao-admin/internal/UI/webui"
 	"ciao-admin/internal/logging"
 	"ciao-admin/internal/loghandlers"

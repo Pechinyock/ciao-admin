@@ -1,0 +1,79 @@
+body {
+    font-family: 'Montserrat-regular';
+}
+
+nav ul{
+    padding: 0;
+}
+.nav-item {
+    cursor: pointer;
+}
+
+.nav-link{
+    font-size: large;
+    padding: 6px 7px;
+}
+
+.nav-link:hover {
+    background-color: #0d6efd;
+    color: whitesmoke;
+    box-shadow: -11px 0px 8px -4px rgba(0, 0, 0, 0.13);
+}
+
+.nav-link.active {
+    background-color: #0d6efd;
+    color: whitesmoke;
+    box-shadow: -11px 0px 8px -4px rgba(0, 0, 0, 0.13);
+}
+
+.shadow {
+    box-shadow: -10px -13px 8px 0px rgba(34, 60, 80, 0.2);
+}
+
+/** buttons */
+
+.btn-action-danger:hover{
+    background-color: #ff393998;
+}
+.btn-action-default:hover{
+    background-color: #438effb2;
+}
+
+/** FONTS */
+
+/* Montserrat-regular */
+@font-face {
+    font-family: 'Montserrat-regular';
+    src: url('/assets/fonts/Montserrat-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Montserrat-bold */
+@font-face {
+    font-family: 'Montserrat-bold';
+    src: url('/assets/fonts/Montserrat-Bold.woff2') format('woff2');
+    font-weight: 700;
+
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Montserrat-thin */
+@font-face {
+    font-family: 'Montserrat-thin';
+    src: url('/assets/fonts/Montserrat-Thin.woff2') format('woff2');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Pacifico-regular */
+@font-face {
+    font-family: 'Pacifico-regular';
+    src: url('/assets/fonts/Pacifico-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
