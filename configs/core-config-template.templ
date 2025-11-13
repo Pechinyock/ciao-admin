@@ -1,0 +1,13 @@
+{
+    "address": "localhost",                                     # raw ip or domain name
+    "port": 8080,                                               # 1 < port < 65535 
+    "logLevel": "debug",                                        # debug | info | warn | error
+    "readTimeout": 15,                                          # seconds, 0 <= readTimeout < 86400, 0 == disabled
+    "writeTimeout": 15,                                         # seconds, 0 <= writeTimeout < 86400, 0 == disabled
+    "certFilePath": "./cert/localhost+3.pem",                   # for http leave empty
+    "certKeyFilePath": "./cert/localhost+3-key.pem",            # for http leave empty
+    "middlewaresConfigPath": "./config/middleware-config.json", # if not provided all will be enabled
+    "enableApiEndpoints": true,
+    "webUIConfigPath": "./config/webuibundle.json",             # if not provided UI will be disabled
+    "fileServerConfigPath": "./config/shareFile.json"           # if not provided files will be disabled
+}

@@ -1,0 +1,14 @@
+{
+    "shareDirConfigs":[
+        {
+            "RouteName": "share",
+            "DirPath": "C:\shared",
+            "TokenSource": "none"        # available options "header", "cookie", "none"
+        },
+        {
+            "RouteName": "secure_files",
+            "DirPath": "C:\porn",
+            "TokenSource": "header"      # Specifies the place where expecting token in order if route is secure. If "none" auth will be ignored
+        },
+    ]
+}

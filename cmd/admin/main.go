@@ -1,12 +1,20 @@
 package main
 
-import "fmt"
+import (
+	"ciao-admin/cmd/admin/app"
+	"fmt"
+)
 
 var (
-	Version    = "dev"
-	GitShorSha = "unknown"
+	version     = "dev"
+	gitShortSHA = "unknown"
 )
 
 func main() {
-	fmt.Printf("admin version: %s", Version)
+	app := app.AdminApplication{
+		Version: fmt.Sprintf("%s-%s", version, gitShortSHA),
+	}
+	if app.Init() {
+		app.Run()
+	}
 }
