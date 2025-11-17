@@ -27,7 +27,12 @@ func registerApiEndpoints(router *http.ServeMux) error {
 	slog.Info("api endpoints are enabled", "api version", 1, "total api endpoints", len(apiv1))
 	for _, route := range apiv1 {
 		if route.Secure {
-			router.HandleFunc(route.Path, apiAuth.Add(route.HandlerFunc))
+			router.HandleFunc(route.Path, apiAuth.Add(route.HandlerFunc,
+				func(w http.ResponseWriter, r *http.Request) {
+					w.WriteHeader(http.StatusUnauthorized)
+				},
+				extractTokenFromHeader),
+			)
 		} else {
 			router.HandleFunc(route.Path, route.HandlerFunc)
 		}
@@ -50,7 +55,12 @@ func registerFromEndpoints(router *http.ServeMux) error {
 
 	for _, route := range formRequests {
 		if route.Secure {
-			router.HandleFunc(route.Path, fromsAuth.Add(route.HandlerFunc))
+			router.HandleFunc(route.Path, fromsAuth.Add(route.HandlerFunc,
+				func(w http.ResponseWriter, r *http.Request) {
+					w.WriteHeader(http.StatusUnauthorized)
+				},
+				extractTokenFromCookie),
+			)
 		} else {
 			router.HandleFunc(route.Path, route.HandlerFunc)
 		}
@@ -106,4 +116,14 @@ func registerFileShareEndpoints(router *http.ServeMux, config *configuration.Fil
 		handlerSetter(e.RouteName, e.DirPath, e.TokenSource)
 	}
 	return nil
+}
+
+func extractTokenFromCookie(r *http.Request) (string, error) {
+	slog.Error("not implemented")
+	return "", nil
+}
+
+func extractTokenFromHeader(r *http.Request) (string, error) {
+	slog.Error("not implemented")
+	return "", nil
 }

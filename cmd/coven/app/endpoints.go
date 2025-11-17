@@ -28,7 +28,11 @@ func registerFromEndpoints(router *http.ServeMux) error {
 
 	for _, route := range formRequests {
 		if route.Secure {
-			router.HandleFunc(route.Path, fromsAuth.Add(route.HandlerFunc))
+			router.HandleFunc(route.Path, fromsAuth.Add(route.HandlerFunc,
+				func(w http.ResponseWriter, r *http.Request) {
+					w.WriteHeader(http.StatusUnauthorized)
+				},
+				extractTokenFromCookie))
 		} else {
 			router.HandleFunc(route.Path, route.HandlerFunc)
 		}
@@ -53,7 +57,10 @@ func registerUIEndpoints(router *http.ServeMux, uiBundle *webui.WebUIBundle) err
 
 	for _, route := range uiEndpoints {
 		if route.Secure {
-			router.HandleFunc(route.Path, uiAuth.Add(route.HandlerFunc))
+			router.HandleFunc(route.Path, uiAuth.Add(route.HandlerFunc,
+				redirectToLoginScreen,
+				extractTokenFromCookie,
+			))
 		} else {
 			router.HandleFunc(route.Path, route.HandlerFunc)
 		}
@@ -109,4 +116,12 @@ func registerFileShareEndpoints(router *http.ServeMux, config *configuration.Fil
 		handlerSetter(e.RouteName, e.DirPath, e.TokenSource)
 	}
 	return nil
+}
+
+func redirectToLoginScreen(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+}
+
+func extractTokenFromCookie(r *http.Request) (string, error) {
+	return "", nil
 }

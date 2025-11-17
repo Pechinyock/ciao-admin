@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coven</title>
+    <link rel="stylesheet" href="assets/style/lib/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/style/lib/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="assets/style/app-global.css">
+</head>
+</head>
+<body>
+    <main class="container-fluid min-vh-100 d-flex justify-content-center align-items-center">
+        <div class="row">
+            <div class="col"></div>
+        <div class="col-md-8">
+            <div class="card shadow mb-3">
+                <img src="" class="card-img-top">
+                <div class="card-body Regular shadow">
+                    <form hx-ext="response-targets" 
+                        hx-post="/form/login"
+                        hx-target-4xx="#error-message"
+                        hx-target-5xx="#error-message"
+                        hx-swap="innerHTML"
+                    >
+                        <div class="form-group row">
+
+                            <div class="mb-3">
+                                <label for="login">Login</label>
+                                <input class="form-control" type="text" id="login" name="login">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password">Password</label>
+                                <input class="form-control" type="password" id="password" name="password">
+                            </div>
+
+                            <div class="container">
+                                <div class="row justify-content-center align-items-center">
+                                    <div class="row">
+                                        <button class="btn btn-primary" type="submit">Sign up</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="error-message"></div>
+        </div>
+        <div class="col"></div>
+        </div>
+    </main>
+</body>
+<script src="assets/js/lib/htmx.min.js"></script>
+<script src="/UI/coven/static/js/lib/htmx-ext-response-targets.min.js"></script>
+</html>

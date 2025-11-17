@@ -12,12 +12,12 @@ const FormPrefix = "/form"
 func GetFormEndpoints() []endpoint.Endpoint {
 	return []endpoint.Endpoint{
 		{
-			Path:    path.Join(FormPrefix, "token"),
-			Methods: []string{"GET"},
-			Secure:  true,
+			Path:    path.Join(FormPrefix, "login"),
+			Methods: []string{"POST"},
+			Secure:  false,
 			HandlerFunc: func(w http.ResponseWriter, r *http.Request) {
-				slog.Info("get token form triggered")
-				w.WriteHeader(http.StatusOK)
+				slog.Info("some one trying to login")
+				w.WriteHeader(http.StatusUnauthorized)
 			},
 		},
 	}

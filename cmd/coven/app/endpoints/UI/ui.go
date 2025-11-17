@@ -13,7 +13,7 @@ func GetUIEndpoints(uiBundle *webui.WebUIBundle) []endpoint.Endpoint {
 		{
 			Path:    "/",
 			Methods: []string{"GET"},
-			Secure:  false,
+			Secure:  true,
 			HandlerFunc: func(w http.ResponseWriter, r *http.Request) {
 				if uiBundle == nil {
 					panic("ui bundle nil")
@@ -24,6 +24,17 @@ func GetUIEndpoints(uiBundle *webui.WebUIBundle) []endpoint.Endpoint {
 					Name: "Mi-si pisi",
 				}
 				uiBundle.Render("main", w, person)
+			},
+		},
+		{
+			Path:    "/login",
+			Methods: []string{"GET"},
+			Secure:  false,
+			HandlerFunc: func(w http.ResponseWriter, r *http.Request) {
+				if uiBundle == nil {
+					panic("ui bundle nil")
+				}
+				uiBundle.Render("login_screen", w, nil)
 			},
 		},
 	}
