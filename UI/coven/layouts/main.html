@@ -11,11 +11,14 @@
 </head>
 
 <body>
-    <main>
-        <section>
-            Application page
+    <main hx-get="/ui/coven" hx-target="#coven" hx-swap="innerHTML" hx-trigger="load">
+        <section id="coven" class="container-fluid">
+
         </section>
     </main>
 </body>
+
+<script src="assets/js/lib/htmx.min.js"></script>
+<script src="/UI/coven/static/js/lib/htmx-ext-response-targets.min.js"></script>
 
 </html>

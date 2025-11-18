@@ -4,6 +4,7 @@ import (
 	"ciao-admin/cmd/coven/app/configuration"
 	ui "ciao-admin/cmd/coven/app/endpoints/UI"
 	"ciao-admin/cmd/coven/app/endpoints/form"
+	"ciao-admin/cmd/coven/app/security"
 	"ciao-admin/internal/UI/webui"
 	"ciao-admin/internal/server/router/middleware"
 	"errors"
@@ -31,6 +32,7 @@ func registerFromEndpoints(router *http.ServeMux) error {
 			router.HandleFunc(route.Path, fromsAuth.Add(route.HandlerFunc,
 				func(w http.ResponseWriter, r *http.Request) {
 					w.WriteHeader(http.StatusUnauthorized)
+					w.Header().Set("HX-Redirect", "/login")
 				},
 				extractTokenFromCookie))
 		} else {
@@ -123,5 +125,14 @@ func redirectToLoginScreen(w http.ResponseWriter, r *http.Request) {
 }
 
 func extractTokenFromCookie(r *http.Request) (string, error) {
+	cookie, err := r.Cookie("coven-token")
+	if err != nil {
+		return "", err
+	}
+	tokenChecker, _ := security.NewTokenProvider()
+	err = tokenChecker.ValidateToken(cookie.Value)
+	if err != nil {
+		return "", err
+	}
 	return "", nil
 }

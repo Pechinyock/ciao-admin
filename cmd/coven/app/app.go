@@ -2,6 +2,7 @@ package app
 
 import (
 	"ciao-admin/cmd/coven/app/configuration"
+	"ciao-admin/cmd/coven/app/repository"
 	"ciao-admin/internal/UI/webui"
 	"ciao-admin/internal/loghandlers"
 	"fmt"
@@ -132,6 +133,8 @@ func (app *CovenApplication) Run() {
 	} else {
 		slog.Info("shared files are disabled")
 	}
+
+	repository.Init()
 
 	serv := http.Server{
 		Addr:         fullAddr,
