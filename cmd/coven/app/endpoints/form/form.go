@@ -6,6 +6,7 @@ import (
 )
 
 const FormPrefix = "/form"
+const characterPathPart = "character"
 
 func GetFormEndpoints() []endpoint.Endpoint {
 	return []endpoint.Endpoint{
@@ -16,10 +17,16 @@ func GetFormEndpoints() []endpoint.Endpoint {
 			HandlerFunc: loginHandleFunc,
 		},
 		{
-			Path:        path.Join(FormPrefix, "character"),
+			Path:        path.Join(FormPrefix, characterPathPart),
 			Methods:     []string{"POST", "GET", "PUT", "DELETE"},
 			Secure:      true,
 			HandlerFunc: characterHadleFunc,
+		},
+		{
+			Path:        path.Join(FormPrefix, characterPathPart, "image"),
+			Methods:     []string{"POST", "GET", "DELETE"},
+			Secure:      true,
+			HandlerFunc: imgPoolUploadFileFunc,
 		},
 	}
 }

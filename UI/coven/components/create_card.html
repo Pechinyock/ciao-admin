@@ -1,5 +1,35 @@
 <section class="container-fluid">
     <div class="row">
+        <form action="/form/character/image" method="post" enctype="multipart/form-data">
+            <div class="form-group row">
+
+                <div class="mb-3">
+                    <label for="file-name">Имя файла (не обязательно)</label>
+                    <input class="form-control" type="text" name="file-name"
+                        title="Если оставить пустым имя будет браться из файла, который был выбран">
+                </div>
+
+                <div class="mb-3">
+                    <label for="file">Картинка для персонажа</label>
+                    <input class="form-control" type="file" name="file"
+                        title="Если оставить пустым имя будет браться из файла, который был выбран">
+                </div>
+
+                <div class="container">
+                    <div class="row justify-content-center align-items-center">
+                        <div class="row">
+                            <button class="btn btn-primary" type="submit"
+                                onclick="">Добавить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<section class="container-fluid">
+    <div class="row">
         <div class="card-body Regular shadow">
             <form hx-ext="response-targets" hx-post="/form/character"
                 hx-target-4xx="#error-message" hx-target-5xx="#error-message"
@@ -7,23 +37,44 @@
                 <div class="form-group row">
 
                     <div class="mb-3">
-                        <label for="character-name">character name</label>
-                        <input class="form-control" type="text" id="character-name"
-                            name="character-name">
+                        <label for="character-name">Имя</label>
+                        <input class="form-control" type="text"
+                            id="character-name" name="character-name">
                     </div>
 
                     <div class="mb-3">
-                        <label for="password">Password</label>
-                        <input class="form-control" type="password"
-                            id="password" name="password">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label"
+                                for="character-role">Добрый</label>
+                            <input class="form-check-input" type="radio"
+                                name="character-role" value="good" required>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label"
+                                for="character-role">Злой</label>
+                            <input class="form-check-input" type="radio"
+                                name="character-role" value="evil">
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label"
+                                for="character-role">Особый</label>
+                            <input class="form-check-input" type="radio"
+                                name="character-role" value="special">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="character-description">Описание</label>
+                        <input class="form-control" type="text"
+                            name="character-description">
                     </div>
 
                     <div class="container">
                         <div
                             class="row justify-content-center align-items-center">
                             <div class="row">
-                                <button class="btn btn-primary"
-                                    type="submit">Sign up</button>
+                                <button class="btn btn-primary" type="submit"
+                                    onclick="">Создать</button>
                             </div>
                         </div>
                     </div>
