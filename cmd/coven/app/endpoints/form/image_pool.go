@@ -1,10 +1,13 @@
 package form
 
 import (
+	ui "ciao-admin/cmd/coven/app/endpoints/UI"
+	"ciao-admin/cmd/coven/app/projection"
 	"ciao-admin/internal/utils"
 	"fmt"
 	"io"
 	"log/slog"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"path"
@@ -18,7 +21,18 @@ const characterImagesDirName = "characters"
 func imgPoolUploadFileFunc(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		fileName := getFileName(r)
+		overideFileName := r.FormValue("file-name")
+		file, handler, _ := r.FormFile("file")
+		if file == nil {
+			slog.Error("failed to upload image, the file image is empty or nil")
+			ui.UIBundle.Render("alert", w, projection.AlertProj{
+				Type:    "danger",
+				Message: "Выбирите файл",
+			})
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		fileName := getFileName(handler, overideFileName)
 		isPng, extension := verifyFiletype(fileName)
 		if isPng {
 			slog.Error("failed to upload file wrong file type, expected png", "actual", extension)
@@ -41,6 +55,10 @@ func uploadImage(fullPath string, w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		slog.Error("failed to upload file")
 		w.WriteHeader(http.StatusBadRequest)
+		ui.UIBundle.Render("alert", w, projection.AlertProj{
+			Type:    "danger",
+			Message: fmt.Sprintf("Не удалось загрузить файл: %s", err.Error()),
+		})
 		return
 	}
 	defer file.Close()
@@ -49,6 +67,10 @@ func uploadImage(fullPath string, w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		slog.Error("failed to create temporary file")
 		w.WriteHeader(http.StatusInternalServerError)
+		ui.UIBundle.Render("alert", w, projection.AlertProj{
+			Type:    "danger",
+			Message: fmt.Sprintf("Не удалось загрузить файл: %s", err.Error()),
+		})
 		return
 	}
 	defer dst.Close()
@@ -56,25 +78,28 @@ func uploadImage(fullPath string, w http.ResponseWriter, r *http.Request) {
 	_, err = io.Copy(dst, file)
 	if err != nil {
 		slog.Error("failed to copy file from form data to the file")
+		ui.UIBundle.Render("alert", w, projection.AlertProj{
+			Type:    "danger",
+			Message: fmt.Sprintf("Не удалось загрузить файл: %s", err.Error()),
+		})
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	fileName := utils.GetFileName(fullPath, true)
 	slog.Info("the file was uploaded successfly", "file name", fileName)
+	ui.UIBundle.Render("alert", w, projection.AlertProj{
+		Type:    "success",
+		Message: fmt.Sprintf("Файл %s успешно добавлен", fileName),
+	})
 }
 
-func getFileName(r *http.Request) string {
-	overideFileName := r.FormValue("file-name")
-	file, handler, _ := r.FormFile("file")
-	if file != nil {
-
-	}
-	if overideFileName == "" {
+func getFileName(handler *multipart.FileHeader, overrideFileName string) string {
+	if overrideFileName == "" {
 		return handler.Filename
 	} else {
 		extension := filepath.Ext(handler.Filename)
-		result := fmt.Sprintf("%s.%s", overideFileName, extension)
+		result := fmt.Sprintf("%s.%s", overrideFileName, extension)
 		return result
 	}
 }

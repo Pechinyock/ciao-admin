@@ -7,6 +7,8 @@ import (
 	"path"
 )
 
+var UIBundle *webui.WebUIBundle
+
 const UIPrefix = "/ui"
 
 func GetUIEndpoints(uiBundle *webui.WebUIBundle) []endpoint.Endpoint {

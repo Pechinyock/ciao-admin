@@ -2,6 +2,7 @@ package app
 
 import (
 	"ciao-admin/cmd/coven/app/configuration"
+	ui "ciao-admin/cmd/coven/app/endpoints/UI"
 	"ciao-admin/cmd/coven/app/repository"
 	"ciao-admin/internal/UI/webui"
 	"ciao-admin/internal/loghandlers"
@@ -119,6 +120,7 @@ func (app *CovenApplication) Run() {
 			return
 		}
 		app.webUIBundle = uibundle
+		ui.UIBundle = uibundle
 	} else {
 		slog.Warn("web ui bundle config was not provided form and UI endpoints are disabled")
 	}

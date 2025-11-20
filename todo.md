@@ -10,3 +10,8 @@
 - [ ] there's several 'loadConfig' func, but could be one using genercs. Inmplement single func for all configs
 - [ ] there's several func for register endpoints. could be one...
 - [ ] if runs via https add redirect middleware for http requests
+
+
+## COVEN
+
+- [ ] try remake uplad img form into hx-post
