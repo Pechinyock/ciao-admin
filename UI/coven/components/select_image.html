@@ -1,0 +1,26 @@
+<section class="container">
+    <div class="row">
+        <div class="col-2">
+            <button class="btn btn-outline-primary w-100 h-100" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#image-pool-collapse"
+                onclick="toogleCollapseButtonText(this)">Спрятать</button>
+        </div>
+        <div class="col-10 collapse show" id="image-pool-collapse">
+            <div data-file-group="{{.FileGroup}}" id="image-pool-view"
+                class="row row-cols-4 g-2 overflow-auto"
+                style="max-height: 300px;">
+                {{range .Images}}
+                <div class="col">
+                    <img src="{{$.BasePath}}/{{$.FileGroup}}/{{.FileName}}"
+                        class="img-fluid rounded w-100 h-100 object-fit-cover"
+                        style="height: 150px !important;"
+                        data-file-name="{{.FileName}}"
+                        onclick="selectImagePoolItem(this)">
+                </div>
+                {{end}}
+            </div>
+        </div>
+    </div>
+
+</section>

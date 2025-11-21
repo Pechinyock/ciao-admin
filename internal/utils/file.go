@@ -52,3 +52,12 @@ func GetFileName(path string, withExt bool) string {
 		return strings.TrimSuffix(fileName, filepath.Ext(fileName))
 	}
 }
+
+func IsFilePath(path string) bool {
+	cleanPath := filepath.Clean(path)
+
+	base := filepath.Base(cleanPath)
+	ext := filepath.Ext(base)
+
+	return ext != "" && base != ext
+}

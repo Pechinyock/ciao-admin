@@ -1,6 +1,7 @@
 package form
 
 import (
+	"ciao-admin/cmd/coven/app/cards"
 	ui "ciao-admin/cmd/coven/app/endpoints/UI"
 	"ciao-admin/cmd/coven/app/projection"
 	"ciao-admin/internal/utils"
@@ -16,11 +17,32 @@ import (
 )
 
 const imagePoolPath = "C:/_dev/card_image_pool"
-const characterImagesDirName = "characters"
 
 func imgPoolUploadFileFunc(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
+		fileGroupName := r.FormValue("group")
+		if fileGroupName == "" {
+			slog.Error("failed to upload image into pool grop can't be empty")
+			ui.UIBundle.Render("alert", w, projection.AlertProj{
+				Type:    "danger",
+				Message: "Выбирите тип(группу) изображения",
+			})
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		_, isGroupDefinied := cards.CardTypes[fileGroupName]
+		if !isGroupDefinied {
+			slog.Error("failed to upload image into pool the group is not defifned",
+				"request group", fileGroupName,
+			)
+			ui.UIBundle.Render("alert", w, projection.AlertProj{
+				Type:    "danger",
+				Message: "Неизвестный группа изображений",
+			})
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 		overideFileName := r.FormValue("file-name")
 		file, handler, _ := r.FormFile("file")
 		if file == nil {
@@ -36,10 +58,23 @@ func imgPoolUploadFileFunc(w http.ResponseWriter, r *http.Request) {
 		isPng, extension := verifyFiletype(fileName)
 		if isPng {
 			slog.Error("failed to upload file wrong file type, expected png", "actual", extension)
+			ui.UIBundle.Render("alert", w, projection.AlertProj{
+				Type:    "danger",
+				Message: fmt.Sprintf("Можно загружать только png файлы, а не %s", extension),
+			})
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		fullPath := path.Join(imagePoolPath, characterImagesDirName, fileName)
+		groupDirPath := path.Join(imagePoolPath, fileGroupName)
+		if !utils.IsDirExists(groupDirPath) {
+			err := os.MkdirAll(groupDirPath, 0755)
+			if err != nil {
+				slog.Error("failed to create dir structure", "error message", err.Error())
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+		}
+		fullPath := path.Join(imagePoolPath, fileGroupName, fileName)
 		uploadImage(fullPath, w, r)
 	case "GET":
 	case "DELETE":

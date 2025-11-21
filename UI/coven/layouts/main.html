@@ -8,17 +8,21 @@
     <link rel="stylesheet" href="assets/style/lib/bootstrap.min.css">
     <link rel="stylesheet" href="assets/style/lib/bootstrap-icons.min.css">
     <link rel="stylesheet" href="assets/style/app-global.css">
+    <script src="assets/js/lib/htmx.min.js" defer></script>
+    <script src="assets/js/lib/htmx-ext-response-targets.min.js" defer></script>
+    <script src="assets/js/lib/bootstrap.bundle.min.js" defer></script>
+    <script src="assets/js/modal.js" defer></script>
+    <script src="assets/js/cards.js" defer></script>
 </head>
 
 <body>
-    <main hx-get="/ui/coven" hx-target="#coven" hx-swap="innerHTML" hx-trigger="load">
+    <main hx-get="/ui/coven" hx-target="#coven" hx-swap="innerHTML"
+        hx-trigger="load">
         <section id="coven" class="container-fluid">
 
         </section>
     </main>
 </body>
 
-<script src="assets/js/lib/htmx.min.js"></script>
-<script src="assets/js/lib/htmx-ext-response-targets.min.js"></script>
 
 </html>

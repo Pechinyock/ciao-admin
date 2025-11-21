@@ -1,0 +1,42 @@
+<section class="container-fluid">
+    <div class="row">
+        <form hx-post="/form/image" hx-target="#result-message"
+            hx-swap="innerHTML" hx-encoding="multipart/form-data">
+            <div class="form-group row">
+                <div class="d-flex flex-wrap gap-3 my-2">
+                    {{range $key, $label := .}}
+                    <div class="form-check" style="flex: 0 0 30%;">
+                        <input class="form-check-input" type="radio"
+                            name="group" id="radio-{{$key}}" value="{{$key}}">
+                        <label class="form-check-label" for="radio-{{$key}}">
+                            {{$label}}
+                        </label>
+                    </div>
+                    {{end}}
+                </div>
+                <div class="mb-3">
+                    <label for="file-name">Имя файла (не обязательно)</label>
+                    <input class="form-control" type="text" name="file-name"
+                        title="Если оставить пустым имя будет браться из файла, который был выбран">
+                </div>
+
+                <div class="mb-3">
+                    <label for="file">Картинка для персонажа</label>
+                    <input class="form-control" type="file" name="file"
+                        title="Если оставить пустым имя будет браться из файла, который был выбран">
+                </div>
+
+                <div class="container">
+                    <div class="row justify-content-center align-items-center">
+                        <div class="row">
+                            <button class="btn btn-primary" type="submit"
+                                onclick="">Добавить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-12 my-2" id="result-message">
+    </div>
+</section>

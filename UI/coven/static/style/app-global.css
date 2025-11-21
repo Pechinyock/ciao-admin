@@ -2,14 +2,15 @@ body {
     font-family: 'Montserrat-regular';
 }
 
-nav ul{
+nav ul {
     padding: 0;
 }
+
 .nav-item {
     cursor: pointer;
 }
 
-.nav-link{
+.nav-link {
     font-size: large;
     padding: 6px 7px;
 }
@@ -32,10 +33,11 @@ nav ul{
 
 /** buttons */
 
-.btn-action-danger:hover{
+.btn-action-danger:hover {
     background-color: #ff393998;
 }
-.btn-action-default:hover{
+
+.btn-action-default:hover {
     background-color: #438effb2;
 }
 

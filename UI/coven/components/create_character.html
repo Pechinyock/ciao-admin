@@ -1,0 +1,53 @@
+<div class="form-group row">
+    <div class="container">
+        <div hx-get="/ui/image-pool/characters" hx-trigger="revealed"
+            hx-target="#characters-image-pool"></div>
+        <div id="characters-image-pool">
+        </div>
+        <input type="hidden" name="selected-character-image"
+            id="selected-character-image">
+        <!-- NAME -->
+        <div class="mb-3">
+            <label for="character-name">Имя</label>
+            <input class="form-control" type="text" id="character-name"
+                name="character-name">
+        </div>
+        <!-- ROLE -->
+        <div class="mb-3">
+            <div class="form-check form-check-inline">
+                <label class="form-check-label"
+                    for="character-role">Добрый</label>
+                <input class="form-check-input" type="radio"
+                    name="character-role" value="good" required>
+            </div>
+            <div class="form-check form-check-inline">
+                <label class="form-check-label"
+                    for="character-role">Злой</label>
+                <input class="form-check-input" type="radio"
+                    name="character-role" value="evil">
+            </div>
+            <div class="form-check form-check-inline">
+                <label class="form-check-label"
+                    for="character-role">Особый</label>
+                <input class="form-check-input" type="radio"
+                    name="character-role" value="special">
+            </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="mb-3">
+            <label for="character-description">Описание</label>
+            <input class="form-control" type="text"
+                name="character-description">
+        </div>
+
+        <div class="row justify-content-center align-items-center mt-2">
+            <div class="row">
+                <button class="btn btn-primary" type="submit" onclick="">Создать
+                    персонажа</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-12 my-2" id="create-card-result-message">
+</div>

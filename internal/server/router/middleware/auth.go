@@ -45,7 +45,6 @@ func headerToken(next http.HandlerFunc, onAuthFailed http.HandlerFunc, tokenExtr
 
 func cookieToken(next http.HandlerFunc, onAuthFailed http.HandlerFunc, tokenExtractor ExtractTokenFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		slog.Info("jwt cookie is triggered")
 		_, err := tokenExtractor(r)
 
 		if err != nil {

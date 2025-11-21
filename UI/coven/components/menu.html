@@ -1,5 +1,12 @@
-<div class="list-group">
-    <a href="/complete-cards"> complete cards </a>
-    <button class="btn btn-primary" hx-get="/ui/create-card"
-        hx-target="#coven-main" hx-swap="innerHTML" hx-trigger="click"> Create card </button>
+<div class="list-group d-flex gap-2 mt-2">
+    <button class="btn btn-primary" data-bs-toggle="modal"
+        data-bs-target="#modal" data-modal-name="add-image"
+        onclick="setModalName(this)"> Добавить изображение </button>
+    <button class="btn btn-primary" data-bs-toggle="modal"
+        data-bs-target="#modal" data-modal-name="create-card"
+        onclick="setModalName(this)"> Создать
+        карту </button>
 </div>
+
+<script>
+</script>
